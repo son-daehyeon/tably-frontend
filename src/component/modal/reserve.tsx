@@ -79,8 +79,8 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
       participants: [user!.id],
       space: undefined,
       date: undefined,
-      startTime: undefined,
-      endTime: undefined,
+      startTime: '09:00',
+      endTime: '09:00',
       reason: '',
     },
   });

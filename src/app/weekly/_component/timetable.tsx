@@ -6,11 +6,9 @@ import { Skeleton } from '@/component/ui/skeleton';
 
 import { ReservationDetailModalProps } from '@/component/modal/reservation-detail';
 
-import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservation';
+import { ReservationDto, Space } from '@/api/types/reservation';
 
 import { useModalStore } from '@/store/modal.store';
-
-import { cn } from '@/lib/utils';
 
 import { eachDayOfInterval, format, isSameDay, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -137,14 +135,7 @@ export default function WeeklyTimetable({
                       return (
                         <div
                           key={reservation.id}
-                          className={cn(
-                            'absolute flex cursor-pointer flex-col justify-between rounded-md border p-1',
-                            reservation.status === ReservationStatus.PENDING
-                              ? 'border-yellow-400 bg-yellow-100/50 text-yellow-700'
-                              : reservation.status === ReservationStatus.IN_USE
-                                ? 'border-green-400 bg-green-100/50 text-green-700'
-                                : 'border-red-400 bg-red-100/50 text-red-700',
-                          )}
+                          className="absolute flex cursor-pointer flex-col justify-between rounded-md border p-1"
                           style={{
                             top: `${start - 540}px`,
                             height: `${end - start}px`,
