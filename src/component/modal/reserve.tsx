@@ -10,7 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/component/ui/command';
-import { DialogHeader, DialogTitle } from '@/component/ui/dialog';
+import { DialogDescription, DialogHeader, DialogTitle } from '@/component/ui/dialog';
 import {
   Form,
   FormControl,
@@ -20,13 +20,6 @@ import {
   FormMessage,
 } from '@/component/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/component/ui/select';
 import { Textarea } from '@/component/ui/textarea';
 import { TimePickerInput } from '@/component/ui/time-picker-input';
 
@@ -54,10 +47,11 @@ import { CalendarIcon, Check, ChevronsUpDown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 export interface ReserveModalProps {
+  space: Space;
   onReserve: (reservation: ReservationDto) => void;
 }
 
-export default function ReserveModal({ onReserve }: ReserveModalProps) {
+export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
   const [isApiProcessing, startApi] = useApiWithToast();
 
   const { user } = useUserStore();
@@ -77,7 +71,7 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
     resolver: zodResolver(ReservationRequestSchema),
     defaultValues: {
       participants: [user!.id],
-      space: undefined,
+      space,
       date: format(new Date(), 'yyyy-MM-dd'),
       startTime: format(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 'HH:mm'),
       endTime: format(addHours(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 1), 'HH:mm'),
@@ -126,6 +120,7 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
     <>
       <DialogHeader>
         <DialogTitle>예약하기</DialogTitle>
+        <DialogDescription>{spaceName(space)}</DialogDescription>
       </DialogHeader>
 
       <Form {...form}>
@@ -246,31 +241,6 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
               )}
             />
           </div>
-
-          <FormField
-            control={form.control}
-            name="space"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>장소</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="장소를 선택해주세요." />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.keys(Space).map((space) => (
-                      <SelectItem key={space} value={space}>
-                        {spaceName(space)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={form.control}

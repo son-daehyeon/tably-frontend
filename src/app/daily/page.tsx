@@ -9,6 +9,7 @@ import { Calendar } from '@/component/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover';
 
 import { ReserveModalProps } from '@/component/modal/reserve';
+import { SpaceModalProps } from '@/component/modal/space';
 
 import Api from '@/api';
 import { ReservationDto } from '@/api/types/reservation';
@@ -27,13 +28,21 @@ export default function Page() {
 
   const [isApiProcessing, startApi] = useApi();
 
-  const { open } = useModalStore();
+  const { open, close } = useModalStore();
 
   const openReserveModal = useCallback(() => {
-    open<ReserveModalProps>('reserve', {
-      onReserve: (reservation) => {
-        if (!isSameDay(parse(reservation.date, 'yyyy-MM-dd', new Date()), date)) return;
-        setReservations((prev) => [...prev, reservation]);
+    open<SpaceModalProps>('space', {
+      onSelect: (space) => {
+        close();
+        setTimeout(() => {
+          open<ReserveModalProps>('reserve', {
+            space,
+            onReserve: (reservation) => {
+              if (!isSameDay(parse(reservation.date, 'yyyy-MM-dd', new Date()), date)) return;
+              setReservations((prev) => [...prev, reservation]);
+            },
+          });
+        });
       },
     });
   }, [date]);
