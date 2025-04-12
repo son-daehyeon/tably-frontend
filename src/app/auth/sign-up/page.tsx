@@ -3,6 +3,7 @@
 import { useCallback } from 'react';
 
 import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
 import { Button } from '@/component/ui/button';
 import {
@@ -54,6 +55,7 @@ export default function Page() {
       async () => {
         const { user } = await Api.Domain.User.signUp(values);
         setUser(user);
+        redirect('/');
       },
       {
         loading: '회원가입을 하고 있습니다.',
