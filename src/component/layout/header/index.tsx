@@ -87,7 +87,10 @@ export default function Header() {
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="text-xs sm:text-sm">
             <User className="size-3.5 sm:size-4" />
-            {user.name}
+            <div className="flex gap-1">
+              {user.name}
+              <span className="text-xs text-neutral-500 sm:text-sm">({clubName(user.club)})</span>
+            </div>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
