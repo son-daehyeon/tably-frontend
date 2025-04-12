@@ -40,7 +40,7 @@ interface SpaceBlockProps {
 function SpaceBlock({ space, onSelect }: SpaceBlockProps) {
   return (
     <div
-      className="flex w-full flex-1 cursor-pointer justify-center rounded-md border py-6 hover:bg-neutral-50"
+      className="flex w-full flex-1 cursor-pointer justify-center rounded-md border py-6 text-sm hover:bg-neutral-50 sm:text-base"
       onClick={() => onSelect(space)}
     >
       {spaceName(space)}
