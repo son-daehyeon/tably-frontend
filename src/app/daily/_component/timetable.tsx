@@ -4,11 +4,11 @@ import { Skeleton } from '@/component/ui/skeleton';
 
 import { ReservationDetailModalProps } from '@/component/modal/reservation-detail';
 
-import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservation';
+import { ReservationDto, Space } from '@/api/types/reservation';
 
 import { useModalStore } from '@/store/modal.store';
 
-import { cn, spaceName } from '@/lib/utils';
+import { spaceName } from '@/lib/utils';
 
 import { format } from 'date-fns';
 

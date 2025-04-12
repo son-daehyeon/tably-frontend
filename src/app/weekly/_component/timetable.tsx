@@ -6,11 +6,9 @@ import { Skeleton } from '@/component/ui/skeleton';
 
 import { ReservationDetailModalProps } from '@/component/modal/reservation-detail';
 
-import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservation';
+import { ReservationDto, Space } from '@/api/types/reservation';
 
 import { useModalStore } from '@/store/modal.store';
-
-import { cn } from '@/lib/utils';
 
 import { eachDayOfInterval, format, isSameDay, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
