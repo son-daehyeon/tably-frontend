@@ -47,7 +47,7 @@ import { useApiWithToast } from '@/hook/use-api';
 import { cn, spaceName } from '@/lib/utils';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, isBefore, parse, startOfDay } from 'date-fns';
+import { addHours, format, isBefore, parse, roundToNearestMinutes, startOfDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import _ from 'lodash';
 import { CalendarIcon, Check, ChevronsUpDown } from 'lucide-react';
@@ -78,9 +78,9 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
     defaultValues: {
       participants: [user!.id],
       space: undefined,
-      date: undefined,
-      startTime: '09:00',
-      endTime: '09:00',
+      date: format(new Date(), 'yyyy-MM-dd'),
+      startTime: format(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 'HH:mm'),
+      endTime: format(addHours(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 1), 'HH:mm'),
       reason: '',
     },
   });
