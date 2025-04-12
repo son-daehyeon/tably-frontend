@@ -131,7 +131,11 @@ export default function WeeklyTimetable({
                       const reservationDate = parseISO(reservation.date);
                       const dayIndex = days.findIndex((day) => isSameDay(day, reservationDate));
                       const start = getMinutes(reservation.startTime);
-                      const end = getMinutes(reservation.endTime);
+                      const end = getMinutes(
+                        reservation.returnedAt
+                          ? format(new Date(reservation.returnedAt), 'HH:mm')
+                          : reservation.endTime,
+                      );
                       return (
                         <div
                           key={reservation.id}
