@@ -59,7 +59,8 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
 
   const [inputQuery, setInputQuery] = useState('');
   const [query, setQuery] = useState('');
-  const [users, setUsers] = useState<UserDto[]>();
+  const [searchedUsers, setSearchedUsers] = useState<UserDto[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<UserDto[]>([user!]);
 
   const startHourRef = useRef<HTMLInputElement>(null);
   const startMinuteRef = useRef<HTMLInputElement>(null);
@@ -109,12 +110,20 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
   );
 
   useEffect(() => {
+    if (query.trim().length === 0) {
+      setSearchedUsers([]);
+      return;
+    }
+
     (async () => {
       const { users } = await Api.Domain.User.getAllUser(query);
-      console.log(query + ' ' + JSON.stringify(users));
-      setUsers(users);
+      setSearchedUsers(users);
     })();
-  }, [query]);
+  }, [query, setSearchedUsers]);
+
+  useEffect(() => {
+    console.log(searchedUsers);
+  }, [searchedUsers]);
 
   return (
     <>
@@ -272,36 +281,45 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                         onValueChange={handleInputChange}
                       />
                       <CommandList>
-                        <CommandEmpty>검색된 유저가 없습니다.</CommandEmpty>
-                        <CommandGroup>
-                          {users?.map((u) => (
-                            <CommandItem
-                              value={u.id}
-                              key={u.id}
-                              onSelect={() => {
-                                if (user?.id === u.id) return;
-
-                                const value = form.getValues('participants');
-
-                                form.setValue(
-                                  'participants',
-                                  value.includes(u.id)
-                                    ? value.filter((x) => x !== u.id)
-                                    : [...value, u.id],
-                                );
-                              }}
-                            >
-                              {u.name}
-                              <span className="text-xs text-neutral-500">({u.club})</span>
-                              <Check
-                                className={cn(
-                                  'ml-auto',
-                                  field.value.includes(u.id) ? 'opacity-100' : 'opacity-0',
-                                )}
-                              />
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
+                        <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
+                        {inputQuery.trim().length > 0
+                          ? searchedUsers
+                              .filter((u) => !selectedUsers.find((su) => su.id === u.id))
+                              .map((u) => (
+                                <CommandItem
+                                  key={u.id}
+                                  value={u.name}
+                                  onSelect={() => {
+                                    form.setValue('participants', [...field.value, u.id]);
+                                    setSelectedUsers((value) => [...value, u]);
+                                    setInputQuery('');
+                                    setQuery('');
+                                  }}
+                                >
+                                  {u.name}
+                                  <span className="text-xs text-neutral-500">({u.club})</span>
+                                </CommandItem>
+                              ))
+                          : selectedUsers.map((u) => (
+                              <CommandItem
+                                key={u.id}
+                                value={u.name}
+                                onSelect={() => {
+                                  if (u.id === user?.id) return;
+                                  form.setValue(
+                                    'participants',
+                                    field.value.filter((id) => id !== u.id),
+                                  );
+                                  setSelectedUsers((value) =>
+                                    value.filter((user) => user.id !== u.id),
+                                  );
+                                }}
+                              >
+                                {u.name}
+                                <span className="text-xs text-neutral-500">({u.club})</span>
+                                <Check className="ml-auto h-4 w-4" />
+                              </CommandItem>
+                            ))}
                       </CommandList>
                     </Command>
                   </PopoverContent>
