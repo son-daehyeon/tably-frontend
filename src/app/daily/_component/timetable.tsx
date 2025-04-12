@@ -122,7 +122,11 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
                     .filter((r) => r.date === format(date, 'yyyy-MM-dd'))
                     .map((reservation) => {
                       const start = getMinutes(reservation.startTime);
-                      const end = getMinutes(reservation.endTime);
+                      const end = getMinutes(
+                        reservation.returnedAt
+                          ? format(new Date(reservation.returnedAt), 'HH:mm')
+                          : reservation.endTime,
+                      );
 
                       const spaceIndex = Object.keys(Space).indexOf(reservation.space);
 
