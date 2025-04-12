@@ -35,8 +35,8 @@ export default function ReservationCard({ reservation, setReservation }: Reserva
         })
       }
     >
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-2 text-sm sm:text-xs">
+        <div className="flex items-center gap-2 text-sm sm:text-xs">
           <Badge
             className={
               reservation.status === ReservationStatus.PENDING
@@ -53,9 +53,10 @@ export default function ReservationCard({ reservation, setReservation }: Reserva
           })}
         </div>
 
-        <div className="flex items-center gap-1">
-          <Clock size={16} />
-          <div className="flex items-center gap-1 text-sm">
+        <div className="flex items-center gap-1 text-sm sm:text-xs">
+          <Clock size={16} className="hidden sm:block" />
+          <Clock size={13} className="block sm:hidden" />
+          <div className="flex items-center gap-1 text-xs sm:text-sm">
             {format(parse(reservation.startTime, 'HH:mm:ss', new Date()), 'HH시 mm분')}~
             {format(parse(reservation.endTime, 'HH:mm:ss', new Date()), 'HH시 mm분')}
           </div>
@@ -63,13 +64,15 @@ export default function ReservationCard({ reservation, setReservation }: Reserva
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center gap-1">
-            <MapPin size={16} />
-            <div className="text-sm">{spaceName(reservation.space)}</div>
+            <MapPin size={16} className="hidden sm:block" />
+            <MapPin size={13} className="block sm:hidden" />
+            <div className="text-xs sm:text-sm">{spaceName(reservation.space)}</div>
           </div>
 
           <div className="flex items-center gap-1">
-            <Users size={16} />
-            <div className="text-sm">{reservation.participants.length}명</div>
+            <Users size={16} className="hidden sm:block" />
+            <Users size={13} className="block sm:hidden" />
+            <div className="text-xs sm:text-sm">{reservation.participants.length}명</div>
           </div>
         </div>
       </div>

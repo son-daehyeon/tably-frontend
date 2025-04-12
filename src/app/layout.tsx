@@ -69,7 +69,9 @@ export default function Layout({ children }: LayoutProps) {
                 <Guard>
                   {isRenderAdditionalComponent && <Header />}
                   <div className={isRenderAdditionalComponent ? 'py-14 sm:pb-0' : ''}>
-                    <div className="mx-auto max-w-2xl p-4 sm:px-4 sm:py-8">{children}</div>
+                    <div className="mx-auto max-h-[100dvh] max-w-2xl p-4 sm:px-4 sm:py-8">
+                      {children}
+                    </div>
                   </div>
                   {isRenderAdditionalComponent && <NavBar />}
                 </Guard>

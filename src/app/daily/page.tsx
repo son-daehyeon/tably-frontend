@@ -47,7 +47,7 @@ export default function Page() {
   }, [date]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4 sm:gap-8">
       <div className="flex w-full items-center justify-center sm:justify-between">
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={() => setDate((prev) => subDays(prev, 1))}>

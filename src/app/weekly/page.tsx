@@ -92,7 +92,7 @@ export default function Page() {
   }, [date]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4 sm:gap-8">
       <div className="flex w-full items-center justify-center sm:justify-between">
         <div className="flex items-center gap-2">
           <Button
@@ -140,7 +140,11 @@ export default function Page() {
         </Button>
       </div>
 
-      <Tabs value={space} onValueChange={(value) => setSpace(value as Space)}>
+      <Tabs
+        value={space}
+        onValueChange={(value) => setSpace(value as Space)}
+        className="overflow-x-auto"
+      >
         <TabsList>
           {Object.keys(Space).map((space) => (
             <TabsTrigger key={space} value={space}>
