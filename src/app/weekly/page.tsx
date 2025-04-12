@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover'
 import { Tabs, TabsList, TabsTrigger } from '@/component/ui/tabs';
 
 import { ReserveModalProps } from '@/component/modal/reserve';
+import { SpaceModalProps } from '@/component/modal/space';
 
 import Api from '@/api';
 import { ReservationDto, Space } from '@/api/types/reservation';
@@ -48,15 +49,23 @@ export default function Page() {
   const { open } = useModalStore();
 
   const openReserveModal = useCallback(() => {
-    open<ReserveModalProps>('reserve', {
-      onReserve: (reservation) => {
-        const reservationDate = parse(reservation.date, 'yyyy-MM-dd', new Date());
-        if (
-          isBefore(reservationDate, startOfDay(date.from!)) ||
-          isAfter(reservationDate, endOfDay(date.to!))
-        )
-          return;
-        setReservations((prev) => [...prev, reservation]);
+    open<SpaceModalProps>('space', {
+      onSelect: (space) => {
+        close();
+        setTimeout(() => {
+          open<ReserveModalProps>('reserve', {
+            space,
+            onReserve: (reservation) => {
+              const reservationDate = parse(reservation.date, 'yyyy-MM-dd', new Date());
+              if (
+                isBefore(reservationDate, startOfDay(date.from!)) ||
+                isAfter(reservationDate, endOfDay(date.to!))
+              )
+                return;
+              setReservations((prev) => [...prev, reservation]);
+            },
+          });
+        });
       },
     });
   }, [date]);

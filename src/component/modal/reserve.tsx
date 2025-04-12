@@ -10,7 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/component/ui/command';
-import { DialogHeader, DialogTitle } from '@/component/ui/dialog';
+import { DialogDescription, DialogHeader, DialogTitle } from '@/component/ui/dialog';
 import {
   Form,
   FormControl,
@@ -20,13 +20,6 @@ import {
   FormMessage,
 } from '@/component/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/component/ui/select';
 import { Textarea } from '@/component/ui/textarea';
 import { TimePickerInput } from '@/component/ui/time-picker-input';
 
@@ -47,17 +40,18 @@ import { useApiWithToast } from '@/hook/use-api';
 import { cn, spaceName } from '@/lib/utils';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, isBefore, parse, startOfDay } from 'date-fns';
+import { addHours, format, isBefore, parse, roundToNearestMinutes, startOfDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import _ from 'lodash';
 import { CalendarIcon, Check, ChevronsUpDown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 export interface ReserveModalProps {
+  space: Space;
   onReserve: (reservation: ReservationDto) => void;
 }
 
-export default function ReserveModal({ onReserve }: ReserveModalProps) {
+export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
   const [isApiProcessing, startApi] = useApiWithToast();
 
   const { user } = useUserStore();
@@ -77,10 +71,10 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
     resolver: zodResolver(ReservationRequestSchema),
     defaultValues: {
       participants: [user!.id],
-      space: undefined,
-      date: undefined,
-      startTime: '09:00',
-      endTime: '09:00',
+      space,
+      date: format(new Date(), 'yyyy-MM-dd'),
+      startTime: format(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 'HH:mm'),
+      endTime: format(addHours(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 1), 'HH:mm'),
       reason: '',
     },
   });
@@ -126,6 +120,7 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
     <>
       <DialogHeader>
         <DialogTitle>예약하기</DialogTitle>
+        <DialogDescription>{spaceName(space)}</DialogDescription>
       </DialogHeader>
 
       <Form {...form}>
@@ -249,36 +244,11 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
 
           <FormField
             control={form.control}
-            name="space"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>장소</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="장소를 선택해주세요." />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.keys(Space).map((space) => (
-                      <SelectItem key={space} value={space}>
-                        {spaceName(space)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="participants"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>사용 인원</FormLabel>
-                <Popover>
+                <Popover modal>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -304,27 +274,29 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
                       <CommandList>
                         <CommandEmpty>검색된 유저가 없습니다.</CommandEmpty>
                         <CommandGroup>
-                          {users?.map((user) => (
+                          {users?.map((u) => (
                             <CommandItem
-                              value={user.id}
-                              key={user.id}
+                              value={u.id}
+                              key={u.id}
                               onSelect={() => {
+                                if (user?.id === u.id) return;
+
                                 const value = form.getValues('participants');
 
                                 form.setValue(
                                   'participants',
-                                  value.includes(user.id)
-                                    ? value.filter((x) => x !== user.id)
-                                    : [...value, user.id],
+                                  value.includes(u.id)
+                                    ? value.filter((x) => x !== u.id)
+                                    : [...value, u.id],
                                 );
                               }}
                             >
-                              {user.name}
-                              <span className="text-xs text-neutral-500">({user.club})</span>
+                              {u.name}
+                              <span className="text-xs text-neutral-500">({u.club})</span>
                               <Check
                                 className={cn(
                                   'ml-auto',
-                                  field.value.includes(user.id) ? 'opacity-100' : 'opacity-0',
+                                  field.value.includes(u.id) ? 'opacity-100' : 'opacity-0',
                                 )}
                               />
                             </CommandItem>

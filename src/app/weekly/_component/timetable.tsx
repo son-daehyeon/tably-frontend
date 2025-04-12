@@ -135,7 +135,7 @@ export default function WeeklyTimetable({
                       return (
                         <div
                           key={reservation.id}
-                          className="absolute flex cursor-pointer flex-col justify-between rounded-md border p-1"
+                          className="absolute flex cursor-pointer flex-col justify-between rounded-md border bg-neutral-50 p-1"
                           style={{
                             top: `${start - 540}px`,
                             height: `${end - start}px`,

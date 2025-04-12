@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 type Modal =
+  | 'space'
   | 'reserve'
   | 'reservation-detail'
   | 'reservation-cancel'
