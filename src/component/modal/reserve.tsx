@@ -278,7 +278,7 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>사용 인원</FormLabel>
-                <Popover>
+                <Popover modal>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -304,27 +304,29 @@ export default function ReserveModal({ onReserve }: ReserveModalProps) {
                       <CommandList>
                         <CommandEmpty>검색된 유저가 없습니다.</CommandEmpty>
                         <CommandGroup>
-                          {users?.map((user) => (
+                          {users?.map((u) => (
                             <CommandItem
-                              value={user.id}
-                              key={user.id}
+                              value={u.id}
+                              key={u.id}
                               onSelect={() => {
+                                if (user?.id === u.id) return;
+
                                 const value = form.getValues('participants');
 
                                 form.setValue(
                                   'participants',
-                                  value.includes(user.id)
-                                    ? value.filter((x) => x !== user.id)
-                                    : [...value, user.id],
+                                  value.includes(u.id)
+                                    ? value.filter((x) => x !== u.id)
+                                    : [...value, u.id],
                                 );
                               }}
                             >
-                              {user.name}
-                              <span className="text-xs text-neutral-500">({user.club})</span>
+                              {u.name}
+                              <span className="text-xs text-neutral-500">({u.club})</span>
                               <Check
                                 className={cn(
                                   'ml-auto',
-                                  field.value.includes(user.id) ? 'opacity-100' : 'opacity-0',
+                                  field.value.includes(u.id) ? 'opacity-100' : 'opacity-0',
                                 )}
                               />
                             </CommandItem>
