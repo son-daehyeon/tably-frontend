@@ -43,7 +43,9 @@ export default function ReservationCard({ reservation, setReservation }: Reserva
                 ? 'border-yellow-400 bg-yellow-100/50 text-yellow-700'
                 : reservation.status === ReservationStatus.IN_USE
                   ? 'border-green-400 bg-green-100/50 text-green-700'
-                  : 'border-red-400 bg-red-100/50 text-red-700'
+                  : reservation.status === ReservationStatus.RETURNED && reservation.returnPicture
+                    ? 'border-blue-400 bg-blue-100/50 text-blue-700'
+                    : 'border-red-400 bg-red-100/50 text-red-700'
             }
           >
             {reservationStatusName(reservation.status)}
