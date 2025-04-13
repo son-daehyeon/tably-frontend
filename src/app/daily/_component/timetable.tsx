@@ -146,8 +146,9 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
                         >
                           <div className="text-xs font-bold sm:text-sm">{reservation.club}</div>
                           <div className="text-xs">
-                            {reservation.participants[0].name} 외{' '}
-                            {reservation.participants.length - 1}명
+                            {reservation.participants[0].name}
+                            {reservation.participants.length > 1 &&
+                              ` 외 ${reservation.participants.length - 1}명`}
                           </div>
                         </div>
                       );
