@@ -69,6 +69,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
 
   const form = useForm<ReservationRequest>({
     resolver: zodResolver(ReservationRequestSchema),
+    mode: 'onChange',
     defaultValues: {
       participants: [user!.id],
       space,
@@ -134,7 +135,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="mx-auto flex w-[300px] flex-col items-center space-y-4"
+          className="mx-auto flex w-full flex-col items-center space-y-4"
         >
           <FormField
             control={form.control}
@@ -180,7 +181,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
             )}
           />
 
-          <div className="flex w-full gap-2">
+          <div className="flex w-full items-start gap-2">
             <FormField
               control={form.control}
               name="startTime"
