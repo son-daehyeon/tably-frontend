@@ -148,6 +148,7 @@ export default function Page() {
         <Button
           variant="default"
           className="fixed right-6 bottom-20 z-10 sm:static"
+          style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
           onClick={openReserveModal}
         >
           <Plus />
