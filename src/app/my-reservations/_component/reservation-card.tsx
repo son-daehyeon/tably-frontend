@@ -84,8 +84,6 @@ export default function ReservationCard({ reservation, setReservation }: Reserva
           className={cn(
             'text-xs sm:text-sm',
             reservation.status === ReservationStatus.PENDING && 'text-red-500 hover:text-red-600',
-            reservation.status === ReservationStatus.RETURNED &&
-              'text-blue-500 hover:text-blue-600',
           )}
           onClick={(e) => {
             e.stopPropagation();
