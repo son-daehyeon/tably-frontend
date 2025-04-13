@@ -139,7 +139,7 @@ export default function WeeklyTimetable({
                       return (
                         <div
                           key={reservation.id}
-                          className="absolute flex cursor-pointer flex-col justify-between rounded-md border bg-neutral-50 p-1"
+                          className="absolute flex cursor-pointer flex-col overflow-y-hidden rounded-md border bg-neutral-50 p-1 sm:gap-0.5"
                           style={{
                             top: `${start - 540}px`,
                             height: `${end - start}px`,
@@ -150,7 +150,11 @@ export default function WeeklyTimetable({
                             open<ReservationDetailModalProps>('reservation-detail', { reservation })
                           }
                         >
-                          <div className="text-sm font-bold">{reservation.club}</div>
+                          <div className="text-xs font-bold sm:text-sm">{reservation.club}</div>
+                          <div className="text-xs">
+                            {reservation.participants[0].name} 외{' '}
+                            {reservation.participants.length - 1}명
+                          </div>
                         </div>
                       );
                     })}
