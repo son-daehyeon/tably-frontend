@@ -62,7 +62,7 @@ export default function ReservationDetailModal({ reservation }: ReservationDetai
           </TableRow>
           {reservation.returnedAt && (
             <TableRow>
-              <TableHead className="font-medium">반납 일자</TableHead>
+              <TableHead className="font-medium">반납 시간</TableHead>
               <TableCell
                 className={
                   reservation.returnPicture ? 'cursor-pointer text-blue-600 hover:underline' : ''
