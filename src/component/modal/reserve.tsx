@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { Badge } from '@/component/ui/badge';
 import { Button } from '@/component/ui/button';
 import { Calendar } from '@/component/ui/calendar';
 import {
@@ -69,6 +70,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
 
   const form = useForm<ReservationRequest>({
     resolver: zodResolver(ReservationRequestSchema),
+    mode: 'onChange',
     defaultValues: {
       participants: [user!.id],
       space,
@@ -134,7 +136,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="mx-auto flex w-[300px] flex-col items-center space-y-4"
+          className="mx-auto flex w-full flex-col items-center space-y-4"
         >
           <FormField
             control={form.control}
@@ -180,7 +182,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
             )}
           />
 
-          <div className="flex w-full gap-2">
+          <div className="flex w-full items-start gap-2">
             <FormField
               control={form.control}
               name="startTime"
@@ -255,7 +257,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
             name="participants"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>사용 인원</FormLabel>
+                <FormLabel>사용 인원 ({selectedUsers.length}명)</FormLabel>
                 <Popover modal>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -263,11 +265,17 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                         variant="outline"
                         role="combobox"
                         className={cn(
-                          'justify-between font-normal',
+                          'flex h-auto justify-between font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
                       >
-                        {field.value.length}명
+                        <div className="flex flex-wrap gap-1">
+                          {selectedUsers.map((user) => (
+                            <Badge key={user.id} variant="secondary">
+                              {user.name}
+                            </Badge>
+                          ))}
+                        </div>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>

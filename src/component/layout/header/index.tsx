@@ -58,8 +58,8 @@ export default function Header() {
   if (!user) return null;
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 flex h-14 items-center justify-between border-b bg-white px-8">
-      <div className="flex gap-10">
+    <header className="fixed top-0 right-0 left-0 z-50 flex h-14 items-center justify-center border-b bg-white">
+      <div className="flex w-2xl items-center justify-between px-4">
         <Link href="/">
           <Image
             src={TablyLogo}
@@ -74,50 +74,56 @@ export default function Header() {
         <nav className="hidden gap-2 sm:flex">
           {menuItems.map((item) => (
             <Link key={item.link} href={item.link}>
-              <Button variant={item.link === pathname ? 'default' : 'ghost'}>
+              <Button
+                variant={item.link === pathname ? 'default' : 'ghost'}
+                className="text-[13px]"
+              >
                 <item.icon />
                 {item.name}
               </Button>
             </Link>
           ))}
         </nav>
-      </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="text-xs sm:text-sm">
-            <User className="size-3.5 sm:size-4" />
-            <div className="flex gap-1">
-              {user.name}
-              <span className="text-xs text-neutral-500 sm:text-sm">({clubName(user.club)})</span>
-            </div>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>동아리</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                {Object.keys(Club).map((club) => (
-                  <DropdownMenuItem
-                    key={club}
-                    className="justify-between"
-                    onClick={() => changeClub(club as Club)}
-                  >
-                    {clubName(club)}
-                    {club === user.club && <Check />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="flex text-red-500" onClick={() => Api.Request.removeToken()}>
-            <LogOut color={colors.red['500']} />
-            로그아웃
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <User className="size-3.5 sm:size-4" />
+              <div className="flex gap-1">
+                {user.name}
+                <span className="text-xs text-neutral-500 sm:text-sm">({clubName(user.club)})</span>
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>동아리</DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  {Object.keys(Club).map((club) => (
+                    <DropdownMenuItem
+                      key={club}
+                      className="justify-between"
+                      onClick={() => changeClub(club as Club)}
+                    >
+                      {clubName(club)}
+                      {club === user.club && <Check />}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="flex text-red-500"
+              onClick={() => Api.Request.removeToken()}
+            >
+              <LogOut color={colors.red['500']} />
+              로그아웃
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 }

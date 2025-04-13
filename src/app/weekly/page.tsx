@@ -6,6 +6,12 @@ import Timetable from '@/app/weekly/_component/timetable';
 
 import { Button } from '@/component/ui/button';
 import { Calendar } from '@/component/ui/calendar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/component/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover';
 import { Tabs, TabsList, TabsTrigger } from '@/component/ui/tabs';
 
@@ -142,6 +148,7 @@ export default function Page() {
         <Button
           variant="default"
           className="fixed right-6 bottom-20 z-10 sm:static"
+          style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
           onClick={openReserveModal}
         >
           <Plus />
@@ -152,7 +159,7 @@ export default function Page() {
       <Tabs
         value={space}
         onValueChange={(value) => setSpace(value as Space)}
-        className="overflow-x-auto"
+        className="hidden overflow-x-auto sm:block"
       >
         <TabsList>
           {Object.keys(Space).map((space) => (
@@ -162,6 +169,25 @@ export default function Page() {
           ))}
         </TabsList>
       </Tabs>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger className="asChild block self-end sm:hidden">
+          <Button variant="outline" className="text-xs">
+            {spaceName(space)}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {Object.keys(Space).map((space) => (
+            <DropdownMenuItem
+              key={space}
+              className="text-xs"
+              onClick={() => setSpace(space as Space)}
+            >
+              {spaceName(space)}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <Timetable date={date} space={space} reservations={reservations} loading={isApiProcessing} />
     </div>

@@ -18,7 +18,7 @@ export default function Page({ error, reset }: PageProps) {
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8">
+    <div className="mt-20 flex flex-col items-center justify-center gap-8">
       <div className="rounded-full bg-red-100 p-4">
         <AlertTriangle className="size-10 text-red-500" />
       </div>

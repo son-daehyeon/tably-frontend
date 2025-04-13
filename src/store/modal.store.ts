@@ -5,7 +5,6 @@ type Modal =
   | 'reserve'
   | 'reservation-detail'
   | 'reservation-cancel'
-  | 'return-picture'
   | 'upload-return-picture';
 
 interface Type<T = unknown> {

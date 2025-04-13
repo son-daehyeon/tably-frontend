@@ -1,11 +1,9 @@
+import Image from 'next/image';
+
 import { DialogDescription, DialogHeader, DialogTitle } from '@/component/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@/component/ui/table';
 
-import { ReturnPictureModalProps } from '@/component/modal/return-picture';
-
 import { ReservationDto } from '@/api/types/reservation';
-
-import { useModalStore } from '@/store/modal.store';
 
 import { clubName, reservationStatusName, spaceName } from '@/lib/utils';
 
@@ -17,8 +15,6 @@ export interface ReservationDetailModalProps {
 }
 
 export default function ReservationDetailModal({ reservation }: ReservationDetailModalProps) {
-  const { open, close } = useModalStore();
-
   return (
     <>
       <DialogHeader>
@@ -62,28 +58,24 @@ export default function ReservationDetailModal({ reservation }: ReservationDetai
           </TableRow>
           {reservation.returnedAt && (
             <TableRow>
-              <TableHead className="font-medium">반납 일자</TableHead>
-              <TableCell
-                className={
-                  reservation.returnPicture ? 'cursor-pointer text-blue-600 hover:underline' : ''
-                }
-                onClick={() => {
-                  if (!reservation.returnPicture) return;
-
-                  close();
-                  setTimeout(() =>
-                    open<ReturnPictureModalProps>('return-picture', {
-                      image: reservation.returnPicture!,
-                    }),
-                  );
-                }}
-              >
-                {format(new Date(reservation.returnedAt), 'HH시 mm분')}
-              </TableCell>
+              <TableHead className="font-medium">반납 시간</TableHead>
+              <TableCell>{format(new Date(reservation.returnedAt), 'HH시 mm분')}</TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
+      {reservation.returnPicture && (
+        <div className="flex items-center justify-center">
+          <Image
+            src={reservation.returnPicture}
+            alt="반납 사진"
+            width={250}
+            height={250}
+            unoptimized
+            className="aspect-video rounded-md object-cover"
+          />
+        </div>
+      )}
     </>
   );
 }
