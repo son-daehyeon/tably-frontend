@@ -10,7 +10,7 @@ import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservatio
 
 import { useModalStore } from '@/store/modal.store';
 
-import { cn } from '@/lib/utils';
+import { clubName, cn } from '@/lib/utils';
 
 import { eachDayOfInterval, format, isSameDay, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -83,7 +83,7 @@ export default function WeeklyTimetable({
           </div>
           <div className="flex">
             <div className="relative flex-shrink-0" style={{ width: `${timeColumnWidth}px` }}>
-              {Array.from({ length: 16 }, (_, i) => (
+              {Array.from({ length: 15 }, (_, i) => (
                 <div
                   key={i}
                   className="absolute text-xs text-neutral-700"
@@ -102,7 +102,7 @@ export default function WeeklyTimetable({
                 height: `${24 * 60 - 9 * 60}px`,
               }}
             >
-              {Array.from({ length: 16 }, (_, i) => (
+              {Array.from({ length: 15 }, (_, i) => (
                 <div
                   key={i}
                   className="absolute w-full border-t border-neutral-200"
@@ -144,7 +144,9 @@ export default function WeeklyTimetable({
                           className={cn(
                             'absolute flex cursor-pointer flex-col overflow-y-hidden rounded-md border bg-white p-1 sm:gap-0.5',
                             reservation.status === ReservationStatus.RETURNED &&
-                              'border-neutral-300 bg-neutral-100',
+                              (reservation.returnPicture
+                                ? 'border-neutral-300 bg-neutral-100'
+                                : 'border-red-300 bg-red-100'),
                           )}
                           style={{
                             top: `${start - 540}px`,
@@ -156,7 +158,9 @@ export default function WeeklyTimetable({
                             open<ReservationDetailModalProps>('reservation-detail', { reservation })
                           }
                         >
-                          <div className="text-xs font-bold sm:text-sm">{reservation.club}</div>
+                          <div className="text-xs font-bold sm:text-sm">
+                            {clubName(reservation.club)}
+                          </div>
                           <div className="text-xs">
                             {reservation.participants[0].name}
                             {reservation.participants.length > 1 &&

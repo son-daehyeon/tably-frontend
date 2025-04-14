@@ -51,14 +51,24 @@ export const ReservationRequestSchema = z
       .refine((time) => {
         const minute = parseInt(time.split(':')[1]);
         return minute % 10 === 0;
-      }, '10분 단위로 입력해주세요.'),
+      }, '10분 단위로 입력해주세요.')
+      .refine((time) => {
+        const [hour, minute] = time.split(':').map(Number);
+        const totalMinutes = hour * 60 + minute;
+        return totalMinutes >= 9 * 60; // 09:00 이상
+      }, '시작 시간은 09:00 이상이어야 합니다.'),
     endTime: z
       .string()
       .regex(LocalTimePattern, '올바른 시간 형태가 아닙니다.')
       .refine((time) => {
         const minute = parseInt(time.split(':')[1]);
         return minute % 10 === 0;
-      }, '10분 단위로 입력해주세요.'),
+      }, '10분 단위로 입력해주세요.')
+      .refine((time) => {
+        const [hour, minute] = time.split(':').map(Number);
+        const totalMinutes = hour * 60 + minute;
+        return totalMinutes <= 23 * 60; // 23:00 이하
+      }, '종료 시간은 23:00 이하여야 합니다.'),
     reason: z.string().min(1, '사유를 입력해주세요.'),
   })
   .refine(

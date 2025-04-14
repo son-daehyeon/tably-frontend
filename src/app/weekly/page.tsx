@@ -39,7 +39,7 @@ import {
   startOfWeek,
   subDays,
 } from 'date-fns';
-import { ArrowLeft, ArrowRight, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Plus } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 
 export default function Page() {
@@ -171,9 +171,10 @@ export default function Page() {
       </Tabs>
 
       <DropdownMenu>
-        <DropdownMenuTrigger className="asChild block self-end sm:hidden">
-          <Button variant="outline" className="text-xs">
+        <DropdownMenuTrigger asChild className="block self-end sm:hidden">
+          <Button variant="outline" className="flex justify-between text-xs">
             {spaceName(space)}
+            <ChevronsUpDown />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

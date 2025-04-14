@@ -43,9 +43,9 @@ export default function ReservationDetailModal({ reservation }: ReservationDetai
           <TableRow>
             <TableHead className="font-medium">사용 기간</TableHead>
             <TableCell>
-              {format(parse(reservation.startTime, 'HH:mm:ss', new Date()), 'HH시 mm분')}
+              {format(parse(reservation.startTime, 'HH:mm:ss', new Date()), 'HH:mm')}
               <span className="mx-1">~</span>
-              {format(parse(reservation.endTime, 'HH:mm:ss', new Date()), 'HH시 mm분')}
+              {format(parse(reservation.endTime, 'HH:mm:ss', new Date()), 'HH:mm')}
             </TableCell>
           </TableRow>
           <TableRow>
@@ -59,7 +59,7 @@ export default function ReservationDetailModal({ reservation }: ReservationDetai
           {reservation.returnedAt && (
             <TableRow>
               <TableHead className="font-medium">반납 시간</TableHead>
-              <TableCell>{format(new Date(reservation.returnedAt), 'HH시 mm분')}</TableCell>
+              <TableCell>{format(new Date(reservation.returnedAt), 'HH:mm')}</TableCell>
             </TableRow>
           )}
         </TableBody>
