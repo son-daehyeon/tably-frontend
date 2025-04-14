@@ -58,8 +58,8 @@ export default function ReservationCard({ reservation, setReservation }: Reserva
           <Clock size={16} className="hidden sm:block" />
           <Clock size={13} className="block sm:hidden" />
           <div className="flex items-center gap-1 text-xs sm:text-sm">
-            {format(parse(reservation.startTime, 'HH:mm:ss', new Date()), 'HH시 mm분')}~
-            {format(parse(reservation.endTime, 'HH:mm:ss', new Date()), 'HH시 mm분')}
+            {format(parse(reservation.startTime, 'HH:mm:ss', new Date()), 'HH:mm')}~
+            {format(parse(reservation.endTime, 'HH:mm:ss', new Date()), 'HH:mm')}
           </div>
         </div>
 

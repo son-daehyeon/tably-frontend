@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Badge } from '@/component/ui/badge';
 import { Button } from '@/component/ui/button';
@@ -12,6 +12,12 @@ import {
 } from '@/component/ui/command';
 import { DialogDescription, DialogHeader, DialogTitle } from '@/component/ui/dialog';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/component/ui/dropdown-menu';
+import {
   Form,
   FormControl,
   FormField,
@@ -21,7 +27,6 @@ import {
 } from '@/component/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover';
 import { Textarea } from '@/component/ui/textarea';
-import { TimePickerInput } from '@/component/ui/time-picker-input';
 
 import Api from '@/api';
 import {
@@ -61,12 +66,6 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
   const [query, setQuery] = useState('');
   const [searchedUsers, setSearchedUsers] = useState<UserDto[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<UserDto[]>([user!]);
-
-  const startHourRef = useRef<HTMLInputElement>(null);
-  const startMinuteRef = useRef<HTMLInputElement>(null);
-
-  const endHourRef = useRef<HTMLInputElement>(null);
-  const endMinuteRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ReservationRequest>({
     resolver: zodResolver(ReservationRequestSchema),
@@ -110,6 +109,9 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
     [onReserve],
   );
 
+  const startTime = form.watch('startTime');
+  const endTime = form.watch('endTime');
+
   useEffect(() => {
     if (query.trim().length === 0) {
       setSearchedUsers([]);
@@ -121,10 +123,6 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
       setSearchedUsers(users);
     })();
   }, [query, setSearchedUsers]);
-
-  useEffect(() => {
-    console.log(searchedUsers);
-  }, [searchedUsers]);
 
   return (
     <>
@@ -191,25 +189,53 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                   <FormLabel>사용 시작 시간</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-1">
-                      <TimePickerInput
-                        picker="hours"
-                        date={field.value ? parse(field.value, 'HH:mm', new Date()) : undefined}
-                        setDate={(value) =>
-                          field.onChange(value ? format(value, 'HH:mm') : undefined)
-                        }
-                        ref={startHourRef}
-                        onRightFocus={() => startMinuteRef.current?.focus()}
-                      />
-                      <p>:</p>
-                      <TimePickerInput
-                        picker="minutes"
-                        date={field.value ? parse(field.value, 'HH:mm', new Date()) : undefined}
-                        setDate={(value) =>
-                          field.onChange(value ? format(value, 'HH:mm') : undefined)
-                        }
-                        ref={startMinuteRef}
-                        onLeftFocus={() => startHourRef.current?.focus()}
-                      />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" className="font-normal">
+                            {field.value.split(':')[0]}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {Array.from({ length: 15 })
+                            .map((_, idx) => idx + 9)
+                            .map((hour) => String(hour).padStart(2, '0'))
+                            .map((hour) => (
+                              <DropdownMenuItem
+                                key={hour}
+                                onClick={() => field.onChange(`${hour}:00`)}
+                              >
+                                {hour}
+                              </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <span>:</span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="font-normal"
+                            disabled={parseInt(startTime.split(':')[0]) === 23}
+                          >
+                            {field.value.split(':')[1]}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {Array.from({ length: 6 })
+                            .map((_, idx) => idx * 10)
+                            .map((minute) => String(minute).padStart(2, '0'))
+                            .map((minute) => (
+                              <DropdownMenuItem
+                                key={minute}
+                                onClick={() =>
+                                  field.onChange(`${field.value.split(':')[0]}:${minute}`)
+                                }
+                              >
+                                {minute}
+                              </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -225,25 +251,53 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                   <FormLabel>사용 종료 시간</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-1">
-                      <TimePickerInput
-                        picker="hours"
-                        date={field.value ? parse(field.value, 'HH:mm', new Date()) : undefined}
-                        setDate={(value) =>
-                          field.onChange(value ? format(value, 'HH:mm') : undefined)
-                        }
-                        ref={endHourRef}
-                        onRightFocus={() => endMinuteRef.current?.focus()}
-                      />
-                      <p>:</p>
-                      <TimePickerInput
-                        picker="minutes"
-                        date={field.value ? parse(field.value, 'HH:mm', new Date()) : undefined}
-                        setDate={(value) =>
-                          field.onChange(value ? format(value, 'HH:mm') : undefined)
-                        }
-                        ref={endMinuteRef}
-                        onLeftFocus={() => endHourRef.current?.focus()}
-                      />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" className="font-normal">
+                            {field.value.split(':')[0]}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {Array.from({ length: 15 })
+                            .map((_, idx) => idx + 9)
+                            .map((hour) => String(hour).padStart(2, '0'))
+                            .map((hour) => (
+                              <DropdownMenuItem
+                                key={hour}
+                                onClick={() => field.onChange(`${hour}:00`)}
+                              >
+                                {hour}
+                              </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <span>:</span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="font-normal"
+                            disabled={parseInt(endTime.split(':')[0]) === 23}
+                          >
+                            {field.value.split(':')[1]}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {Array.from({ length: 6 })
+                            .map((_, idx) => idx * 10)
+                            .map((minute) => String(minute).padStart(2, '0'))
+                            .map((minute) => (
+                              <DropdownMenuItem
+                                key={minute}
+                                onClick={() =>
+                                  field.onChange(`${field.value.split(':')[0]}:${minute}`)
+                                }
+                              >
+                                {minute}
+                              </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </FormControl>
                   <FormMessage />

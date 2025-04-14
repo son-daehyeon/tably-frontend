@@ -171,7 +171,7 @@ export default function Page() {
       </Tabs>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild className="asChild block self-end sm:hidden">
+        <DropdownMenuTrigger asChild className="block self-end sm:hidden">
           <Button variant="outline" className="flex justify-between text-xs">
             {spaceName(space)}
             <ChevronsUpDown />
