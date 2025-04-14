@@ -8,7 +8,7 @@ import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservatio
 
 import { useModalStore } from '@/store/modal.store';
 
-import { cn, spaceName } from '@/lib/utils';
+import { clubName, cn, spaceName } from '@/lib/utils';
 
 import { format } from 'date-fns';
 
@@ -150,7 +150,9 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
                             open<ReservationDetailModalProps>('reservation-detail', { reservation })
                           }
                         >
-                          <div className="text-xs font-bold sm:text-sm">{reservation.club}</div>
+                          <div className="text-xs font-bold sm:text-sm">
+                            {clubName(reservation.club)}
+                          </div>
                           <div className="text-xs">
                             {reservation.participants[0].name}
                             {reservation.participants.length > 1 &&

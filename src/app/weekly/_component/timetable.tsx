@@ -10,7 +10,7 @@ import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservatio
 
 import { useModalStore } from '@/store/modal.store';
 
-import { cn } from '@/lib/utils';
+import { clubName, cn } from '@/lib/utils';
 
 import { eachDayOfInterval, format, isSameDay, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -158,7 +158,9 @@ export default function WeeklyTimetable({
                             open<ReservationDetailModalProps>('reservation-detail', { reservation })
                           }
                         >
-                          <div className="text-xs font-bold sm:text-sm">{reservation.club}</div>
+                          <div className="text-xs font-bold sm:text-sm">
+                            {clubName(reservation.club)}
+                          </div>
                           <div className="text-xs">
                             {reservation.participants[0].name}
                             {reservation.participants.length > 1 &&
