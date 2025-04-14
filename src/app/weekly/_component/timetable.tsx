@@ -144,7 +144,9 @@ export default function WeeklyTimetable({
                           className={cn(
                             'absolute flex cursor-pointer flex-col overflow-y-hidden rounded-md border bg-white p-1 sm:gap-0.5',
                             reservation.status === ReservationStatus.RETURNED &&
-                              'border-neutral-300 bg-neutral-100',
+                              (reservation.returnPicture
+                                ? 'border-neutral-300 bg-neutral-100'
+                                : 'border-red-300 bg-red-100'),
                           )}
                           style={{
                             top: `${start - 540}px`,
