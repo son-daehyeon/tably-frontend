@@ -90,7 +90,7 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
               className="relative"
               style={{
                 width: `${computedColumnWidth * Object.keys(Space).length}px`,
-                height: `${24 * 60 - 9 * 60}px`,
+                height: `${23 * 60 - 9 * 60}px`,
               }}
             >
               {Array.from({ length: 15 }, (_, i) => (
