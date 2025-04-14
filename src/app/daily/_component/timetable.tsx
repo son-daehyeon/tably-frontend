@@ -80,7 +80,7 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
                 <div
                   key={i}
                   className="absolute text-xs text-neutral-700"
-                  style={{ top: `${i * 60 - (i === 0 ? 0 : i === 15 ? 16 : 8)}px` }}
+                  style={{ top: `${i * 60 - (i === 0 ? 0 : i === 14 ? 16 : 8)}px` }}
                 >
                   {String(9 + i).padStart(2, '0')}:00
                 </div>
@@ -90,7 +90,7 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
               className="relative"
               style={{
                 width: `${computedColumnWidth * Object.keys(Space).length}px`,
-                height: `${24 * 60 - 9 * 60}px`,
+                height: `${23 * 60 - 9 * 60}px`,
               }}
             >
               {Array.from({ length: 15 }, (_, i) => (
