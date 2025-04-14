@@ -99,7 +99,7 @@ export default function WeeklyTimetable({
               className="relative"
               style={{
                 width: computedColumnWidth * 7,
-                height: `${24 * 60 - 9 * 60}px`,
+                height: `${23 * 60 - 9 * 60}px`,
               }}
             >
               {Array.from({ length: 15 }, (_, i) => (
