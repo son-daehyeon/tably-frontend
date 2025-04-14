@@ -83,7 +83,7 @@ export default function WeeklyTimetable({
           </div>
           <div className="flex">
             <div className="relative flex-shrink-0" style={{ width: `${timeColumnWidth}px` }}>
-              {Array.from({ length: 16 }, (_, i) => (
+              {Array.from({ length: 15 }, (_, i) => (
                 <div
                   key={i}
                   className="absolute text-xs text-neutral-700"
@@ -102,7 +102,7 @@ export default function WeeklyTimetable({
                 height: `${24 * 60 - 9 * 60}px`,
               }}
             >
-              {Array.from({ length: 16 }, (_, i) => (
+              {Array.from({ length: 15 }, (_, i) => (
                 <div
                   key={i}
                   className="absolute w-full border-t border-neutral-200"
