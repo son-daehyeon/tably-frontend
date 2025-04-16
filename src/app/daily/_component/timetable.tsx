@@ -153,12 +153,11 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
                             left: `${spaceIndex * computedColumnWidth + 2}px`,
                             width: `${computedColumnWidth - 4}px`,
                           }}
-                          onClick={() => {
-                            if (showGuide) return;
+                          onClick={() =>
                             open<ReservationDetailModalProps>('reservation-detail', {
                               reservation,
-                            });
-                          }}
+                            })
+                          }
                         >
                           <div className="text-xs font-bold sm:text-sm">
                             {clubName(reservation.club)}

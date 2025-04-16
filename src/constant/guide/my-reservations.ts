@@ -1,18 +1,13 @@
 import { redirect } from 'next/navigation';
 
-import { driver } from '@/constant/guide/index';
+import { defaultConfig, driver } from '@/constant/guide/index';
 
 import { useGuideStore } from '@/store/guide.store';
 
 import { Config } from 'driver.js';
 
 export const myReservationsDriver: Config = {
-  nextBtnText: '다음',
-  prevBtnText: '이전',
-  doneBtnText: '끝',
-  showButtons: ['next', 'previous'],
-  allowClose: false,
-  allowKeyboardControl: false,
+  ...defaultConfig,
   steps: [
     {
       element: '#my-reservation-tab-active',
@@ -40,8 +35,9 @@ export const myReservationsDriver: Config = {
       popover: {
         title: '지난 예약',
         description: '이미 반납이 완료된 예약 내역입니다.',
-        showButtons: [],
+        showButtons: ['close'],
       },
+      disableActiveInteraction: false,
     },
     {
       element: '#my-reservation-mock-1',

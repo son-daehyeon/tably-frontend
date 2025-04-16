@@ -1,13 +1,9 @@
+import { defaultConfig } from '@/constant/guide/index';
+
 import { Config } from 'driver.js';
 
 export const reserveModalDriver: Config = {
-  nextBtnText: '다음',
-  prevBtnText: '이전',
-  doneBtnText: '다음',
-  showButtons: ['next', 'previous'],
-  allowClose: false,
-  allowKeyboardControl: false,
-  overlayColor: 'rgba(0, 0, 0, 0.6)',
+  ...defaultConfig,
   steps: [
     {
       element: '#reserve-modal-date',
@@ -49,8 +45,9 @@ export const reserveModalDriver: Config = {
       popover: {
         title: '예약 제출',
         description: '입력한 정보를 바탕으로 예약을 진행합니다.',
-        showButtons: [],
+        showButtons: ['close'],
       },
+      disableActiveInteraction: false,
     },
   ],
 };

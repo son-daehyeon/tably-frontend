@@ -1,12 +1,9 @@
+import { defaultConfig } from '@/constant/guide/index';
+
 import { Config } from 'driver.js';
 
 export const dailyDriver: Config = {
-  nextBtnText: '다음',
-  prevBtnText: '이전',
-  doneBtnText: '다음',
-  showButtons: ['next', 'previous'],
-  allowClose: false,
-  allowKeyboardControl: false,
+  ...defaultConfig,
   steps: [
     {
       element: '#calendar',
@@ -48,8 +45,9 @@ export const dailyDriver: Config = {
       popover: {
         title: '예약하러 가기',
         description: '예약 폼으로 이동합니다.',
-        showButtons: [],
+        showButtons: ['close'],
       },
+      disableActiveInteraction: false,
     },
   ],
 };

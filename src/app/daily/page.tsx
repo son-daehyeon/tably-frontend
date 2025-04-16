@@ -15,7 +15,7 @@ import { dailyMockReservations, driver } from '@/constant/guide';
 import { dailyDriver } from '@/constant/guide/daily';
 
 import Api from '@/api';
-import { ReservationDto, Space } from '@/api/types/reservation';
+import { ReservationDto } from '@/api/types/reservation';
 
 import { useGuideStore } from '@/store/guide.store';
 import { useModalStore } from '@/store/modal.store';
@@ -38,7 +38,6 @@ export default function Page() {
   const openReserveModal = useCallback(() => {
     open<SpaceModalProps>('space', {
       onSelect: (space) => {
-        if (showGuide && space !== Space.TABLE4) return;
         close();
         setTimeout(() => {
           open<ReserveModalProps>('reserve', {
@@ -51,7 +50,7 @@ export default function Page() {
         });
       },
     });
-  }, [showGuide, date]);
+  }, [date]);
 
   useEffect(() => {
     if (showGuide) return;

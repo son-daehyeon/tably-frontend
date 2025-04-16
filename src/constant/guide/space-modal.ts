@@ -1,13 +1,9 @@
+import { defaultConfig } from '@/constant/guide/index';
+
 import { Config } from 'driver.js';
 
 export const spaceModalDriver: Config = {
-  nextBtnText: '다음',
-  prevBtnText: '이전',
-  doneBtnText: '다음',
-  showButtons: ['next', 'previous'],
-  allowClose: false,
-  allowKeyboardControl: false,
-  overlayColor: 'rgba(0, 0, 0, 0.6)',
+  ...defaultConfig,
   steps: [
     {
       element: '#space-modal',
@@ -21,8 +17,9 @@ export const spaceModalDriver: Config = {
       popover: {
         title: '테스트 예약',
         description: '예시로 테이블 4번 공간을 예약해봅니다.',
-        showButtons: [],
+        showButtons: ['close'],
       },
+      disableActiveInteraction: false,
     },
   ],
 };

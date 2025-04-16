@@ -47,10 +47,11 @@ export default function Page() {
       <Tabs
         value={tab}
         onValueChange={(value) => {
-          if (showGuide && value === 'previous') {
-            setTimeout(() => driver.moveNext(), 1500);
-          }
           setTab(value as TabValue);
+
+          if (showGuide && value === 'previous') {
+            setTimeout(driver.moveNext, 200);
+          }
         }}
       >
         <TabsList>

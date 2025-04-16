@@ -1,10 +1,28 @@
+import { redirect } from 'next/navigation';
+
 import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservation';
 import { Club, UserDto } from '@/api/types/user';
 
+import { useGuideStore } from '@/store/guide.store';
+
 import { format } from 'date-fns';
-import { Driver, driver as _driver } from 'driver.js';
+import { Config, Driver, driver as _driver } from 'driver.js';
 
 export const driver: Driver = _driver();
+
+export const defaultConfig: Config = {
+  nextBtnText: '다음',
+  prevBtnText: '이전',
+  doneBtnText: '종료',
+  allowKeyboardControl: false,
+  overlayClickBehavior: undefined,
+  disableActiveInteraction: true,
+  onCloseClick: () => {
+    driver.destroy();
+    useGuideStore.getState().setShowGuide(false);
+    redirect('/daily');
+  },
+};
 
 const ut: UserDto = {
   id: 'ut',
