@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Skeleton } from '@/component/ui/skeleton';
@@ -6,6 +8,7 @@ import { ReservationDetailModalProps } from '@/component/modal/reservation-detai
 
 import { ReservationDto, ReservationStatus, Space } from '@/api/types/reservation';
 
+import { useGuideStore } from '@/store/guide.store';
 import { useModalStore } from '@/store/modal.store';
 
 import { clubName, cn, spaceName } from '@/lib/utils';
@@ -25,6 +28,7 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
   const [containerWidth, setContainerWidth] = useState(0);
 
   const { open } = useModalStore();
+  const { showGuide } = useGuideStore();
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +58,7 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" id="timetable">
       <div className="overflow-x-auto overflow-y-hidden" ref={containerRef}>
         <div
           style={{
@@ -76,11 +80,13 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
           </div>
           <div className="flex">
             <div className="relative flex-shrink-0" style={{ width: `${timeColumnWidth}px` }}>
-              {Array.from({ length: 15 }, (_, i) => (
+              {Array.from({ length: showGuide ? 8 : 15 }, (_, i) => (
                 <div
                   key={i}
                   className="absolute text-xs text-neutral-700"
-                  style={{ top: `${i * 60 - (i === 0 ? 0 : i === 14 ? 16 : 8)}px` }}
+                  style={{
+                    top: `${i * 60 - (i === 0 ? 0 : i === (showGuide ? 7 : 14) ? 16 : 8)}px`,
+                  }}
                 >
                   {String(9 + i).padStart(2, '0')}:00
                 </div>
@@ -90,10 +96,10 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
               className="relative"
               style={{
                 width: `${computedColumnWidth * Object.keys(Space).length}px`,
-                height: `${23 * 60 - 9 * 60}px`,
+                height: `${(showGuide ? 16 : 23) * 60 - 9 * 60}px`,
               }}
             >
-              {Array.from({ length: 15 }, (_, i) => (
+              {Array.from({ length: showGuide ? 8 : 15 }, (_, i) => (
                 <div
                   key={i}
                   className="absolute w-full border-t border-neutral-200"
@@ -132,6 +138,7 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
 
                       return (
                         <div
+                          id={reservation.id}
                           key={reservation.id}
                           className={cn(
                             'absolute flex cursor-pointer flex-col overflow-y-hidden rounded-md border bg-white p-1 sm:gap-0.5',
@@ -146,9 +153,12 @@ export default function Timetable({ date, reservations, loading }: TimetableProp
                             left: `${spaceIndex * computedColumnWidth + 2}px`,
                             width: `${computedColumnWidth - 4}px`,
                           }}
-                          onClick={() =>
-                            open<ReservationDetailModalProps>('reservation-detail', { reservation })
-                          }
+                          onClick={() => {
+                            if (showGuide) return;
+                            open<ReservationDetailModalProps>('reservation-detail', {
+                              reservation,
+                            });
+                          }}
                         >
                           <div className="text-xs font-bold sm:text-sm">
                             {clubName(reservation.club)}

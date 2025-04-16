@@ -6,6 +6,8 @@ import ClientLayout from '@/app/client-layout';
 
 import '@/style/global.css';
 
+import 'driver.js/dist/driver.css';
+
 interface LayoutProps {
   children: ReactNode;
 }

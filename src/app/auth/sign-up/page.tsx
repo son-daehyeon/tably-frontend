@@ -26,6 +26,7 @@ import {
 import Api from '@/api';
 import { Club, SignUpRequest, SignUpRequestSchema } from '@/api/types/user';
 
+import { useGuideStore } from '@/store/guide.store';
 import { useUserStore } from '@/store/user.store';
 
 import { useApiWithToast } from '@/hook/use-api';
@@ -39,6 +40,7 @@ import { useForm } from 'react-hook-form';
 
 export default function Page() {
   const { setUser } = useUserStore();
+  const { setShowGuide } = useGuideStore();
 
   const [isApiProcessing, startApi] = useApiWithToast();
 
@@ -55,7 +57,8 @@ export default function Page() {
       async () => {
         const { user } = await Api.Domain.User.signUp(values);
         setUser(user);
-        redirect('/');
+        setShowGuide(true);
+        redirect('/daily');
       },
       {
         loading: '회원가입을 하고 있습니다.',
