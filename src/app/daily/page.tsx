@@ -11,9 +11,13 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover'
 import { ReserveModalProps } from '@/component/modal/reserve';
 import { SpaceModalProps } from '@/component/modal/space';
 
+import { dailyMockReservations, driver } from '@/constant/guide';
+import { dailyDriver } from '@/constant/guide/daily';
+
 import Api from '@/api';
 import { ReservationDto } from '@/api/types/reservation';
 
+import { useGuideStore } from '@/store/guide.store';
 import { useModalStore } from '@/store/modal.store';
 
 import { useApi } from '@/hook/use-api';
@@ -28,6 +32,7 @@ export default function Page() {
 
   const [isApiProcessing, startApi] = useApi();
 
+  const { showGuide } = useGuideStore();
   const { open, close } = useModalStore();
 
   const openReserveModal = useCallback(() => {
@@ -48,12 +53,20 @@ export default function Page() {
   }, [date]);
 
   useEffect(() => {
-    setReservations([]);
+    if (showGuide) return;
+
     startApi(async () => {
       const { reservations } = await Api.Domain.Reservation.getDailyReservations(date);
       setReservations(reservations);
     });
-  }, [date]);
+  }, [showGuide, date]);
+
+  useEffect(() => {
+    if (!showGuide) return;
+    driver.setConfig(dailyDriver);
+    driver.drive();
+    setReservations(dailyMockReservations);
+  }, [showGuide]);
 
   return (
     <div className="flex flex-col gap-4 sm:gap-8">
@@ -64,7 +77,7 @@ export default function Page() {
           </Button>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" className="w-[200px] font-normal">
+              <Button variant="outline" className="w-[200px] font-normal" id="calendar">
                 {format(date, 'yyyy년 MM월 dd일 (E)', { locale: ko })}
               </Button>
             </PopoverTrigger>
@@ -81,6 +94,7 @@ export default function Page() {
           </Button>
         </div>
         <Button
+          id="reservation-button"
           variant="default"
           className="fixed right-6 bottom-20 z-10 sm:static"
           style={{ marginBottom: 'env(safe-area-inset-bottom)' }}

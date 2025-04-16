@@ -18,7 +18,7 @@ export default function Page() {
         await Api.Request.setToken(token);
       }
 
-      redirect(isNewUser ? '/auth/sign-up/' : '/');
+      redirect(isNewUser ? '/auth/sign-up/' : '/daily');
     })();
   }, []);
 }

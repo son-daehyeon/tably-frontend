@@ -1,3 +1,5 @@
+'use client';
+
 import { Dispatch, SetStateAction } from 'react';
 
 import { Badge } from '@/component/ui/badge';
@@ -27,6 +29,7 @@ export default function ReservationCard({ reservation, setReservation }: Reserva
 
   return (
     <div
+      id={reservation.id}
       className="flex cursor-pointer items-center justify-between rounded-md border p-4 hover:bg-neutral-50"
       onClick={() =>
         open<ReservationDetailModalProps>('reservation-detail', {
