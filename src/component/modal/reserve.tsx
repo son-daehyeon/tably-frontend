@@ -52,7 +52,17 @@ import { useApiWithToast } from '@/hook/use-api';
 import { clubName, cn, spaceName } from '@/lib/utils';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { addHours, format, isBefore, parse, roundToNearestMinutes, startOfDay } from 'date-fns';
+import {
+  addDays,
+  addHours,
+  endOfDay,
+  format,
+  isAfter,
+  isBefore,
+  parse,
+  roundToNearestMinutes,
+  startOfDay,
+} from 'date-fns';
 import { ko } from 'date-fns/locale';
 import _ from 'lodash';
 import { CalendarIcon, Check, ChevronsUpDown } from 'lucide-react';
@@ -217,7 +227,10 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                       onSelect={(value) =>
                         field.onChange(value ? format(value, 'yyyy-MM-dd') : undefined)
                       }
-                      disabled={(value) => isBefore(value, startOfDay(new Date()))}
+                      disabled={(value) =>
+                        isBefore(value, startOfDay(new Date())) ||
+                        isAfter(value, endOfDay(addDays(new Date(), 7)))
+                      }
                     />
                   </PopoverContent>
                 </Popover>
@@ -306,11 +319,16 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                         <DropdownMenuContent>
                           {Array.from({ length: 15 })
                             .map((_, idx) => idx + 9)
+                            .filter(
+                              (hour) => hour >= parse(startTime, 'HH:mm', new Date()).getHours(),
+                            )
                             .map((hour) => String(hour).padStart(2, '0'))
                             .map((hour) => (
                               <DropdownMenuItem
                                 key={hour}
-                                onClick={() => field.onChange(`${hour}:00`)}
+                                onClick={() =>
+                                  field.onChange(`${hour}:${field.value.split(':')[1]}`)
+                                }
                               >
                                 {hour}
                               </DropdownMenuItem>
@@ -331,6 +349,12 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                         <DropdownMenuContent>
                           {Array.from({ length: 6 })
                             .map((_, idx) => idx * 10)
+                            .filter((minute) =>
+                              parse(startTime, 'HH:mm', new Date()).getHours() ===
+                              parse(endTime, 'HH:mm', new Date()).getHours()
+                                ? minute > parse(startTime, 'HH:mm', new Date()).getMinutes()
+                                : true,
+                            )
                             .map((minute) => String(minute).padStart(2, '0'))
                             .map((minute) => (
                               <DropdownMenuItem
