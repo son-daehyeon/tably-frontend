@@ -42,7 +42,7 @@ import { useUserStore } from '@/store/user.store';
 
 import { useApiWithToast } from '@/hook/use-api';
 
-import { cn, spaceName } from '@/lib/utils';
+import { clubName, cn, spaceName } from '@/lib/utils';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addHours, format, isBefore, parse, roundToNearestMinutes, startOfDay } from 'date-fns';
@@ -358,7 +358,9 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                                   }}
                                 >
                                   {u.name}
-                                  <span className="text-xs text-neutral-500">({u.club})</span>
+                                  <span className="text-xs text-neutral-500">
+                                    ({clubName(u.club)})
+                                  </span>
                                 </CommandItem>
                               ))
                           : selectedUsers.map((u) => (
@@ -377,7 +379,9 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
                                 }}
                               >
                                 {u.name}
-                                <span className="text-xs text-neutral-500">({u.club})</span>
+                                <span className="text-xs text-neutral-500">
+                                  ({clubName(u.club)})
+                                </span>
                                 <Check className="ml-auto h-4 w-4" />
                               </CommandItem>
                             ))}
