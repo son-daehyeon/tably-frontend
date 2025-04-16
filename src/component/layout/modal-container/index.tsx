@@ -6,9 +6,11 @@ import dynamic from 'next/dynamic';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/component/ui/dialog';
 
+import { useGuideStore } from '@/store/guide.store';
 import { useModalStore } from '@/store/modal.store';
 
 export default function ModalContainer() {
+  const { showGuide } = useGuideStore();
   const { modal, close, props } = useModalStore();
   const [ModalComponent, setModalComponent] = useState<ComponentType<unknown> | null>(null);
 
@@ -41,7 +43,7 @@ export default function ModalContainer() {
   if (!ModalComponent) return null;
 
   return (
-    <Dialog open={!!modal} onOpenChange={(value) => !value && close()}>
+    <Dialog open={!!modal} onOpenChange={(value) => !showGuide && !value && close()}>
       <DialogContent>
         <ModalComponent {...(props || {})} />
       </DialogContent>

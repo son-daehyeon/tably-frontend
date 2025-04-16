@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 
 import { Button } from '@/component/ui/button';
 import {
@@ -24,6 +24,7 @@ import { menuItems } from '@/constant/menu-item';
 import Api from '@/api';
 import { Club } from '@/api/types/user';
 
+import { useGuideStore } from '@/store/guide.store';
 import { useUserStore } from '@/store/user.store';
 
 import { useApiWithToast } from '@/hook/use-api';
@@ -32,15 +33,18 @@ import { clubName } from '@/lib/utils';
 
 import TablyLogo from '@/public/tably.png';
 
-import { Check, LogOut, User } from 'lucide-react';
+import { Check, CircleHelp, LogOut, User } from 'lucide-react';
 import colors from 'tailwindcss/colors';
 
 export default function Header() {
   const pathname = usePathname();
 
   const { user, setUser } = useUserStore();
+  const { setShowGuide } = useGuideStore();
 
   const [, startApi] = useApiWithToast();
+
+  const [open, setOpen] = useState(false);
 
   const changeClub = useCallback((club: Club) => {
     startApi(
@@ -86,41 +90,58 @@ export default function Header() {
         </nav>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="text-xs sm:text-sm">
-            <User className="size-3.5 sm:size-4" />
-            <div className="flex gap-1">
-              {user.name}
-              <span className="text-xs text-neutral-500 sm:text-sm">({clubName(user.club)})</span>
-            </div>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>동아리</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                {Object.keys(Club).map((club) => (
-                  <DropdownMenuItem
-                    key={club}
-                    className="justify-between"
-                    onClick={() => changeClub(club as Club)}
-                  >
-                    {clubName(club)}
-                    {club === user.club && <Check />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="flex text-red-500" onClick={() => Api.Request.removeToken()}>
-            <LogOut color={colors.red['500']} />
-            로그아웃
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="flex"
+          onClick={() => {
+            setShowGuide(true);
+            redirect('/daily');
+          }}
+        >
+          <CircleHelp />
+        </Button>
+
+        <DropdownMenu open={open} onOpenChange={setOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <User className="size-3.5 sm:size-4" />
+              <div className="flex gap-1">
+                {user.name}
+                <span className="text-xs text-neutral-500 sm:text-sm">({clubName(user.club)})</span>
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>동아리</DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  {Object.keys(Club).map((club) => (
+                    <DropdownMenuItem
+                      key={club}
+                      className="justify-between"
+                      onClick={() => changeClub(club as Club)}
+                    >
+                      {clubName(club)}
+                      {club === user.club && <Check />}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="flex text-red-500"
+              onClick={() => Api.Request.removeToken()}
+            >
+              <LogOut color={colors.red['500']} />
+              로그아웃
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 }

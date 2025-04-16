@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { redirect } from 'next/navigation';
+
 import { Badge } from '@/component/ui/badge';
 import { Button } from '@/component/ui/button';
 import { Calendar } from '@/component/ui/calendar';
@@ -28,15 +30,20 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/component/ui/popover';
 import { Textarea } from '@/component/ui/textarea';
 
+import { driver } from '@/constant/guide';
+import { reserveModalDriver } from '@/constant/guide/reserve-modal';
+
 import Api from '@/api';
 import {
   ReservationDto,
   ReservationRequest,
   ReservationRequestSchema,
+  ReservationStatus,
   Space,
 } from '@/api/types/reservation';
 import { UserDto } from '@/api/types/user';
 
+import { useGuideStore } from '@/store/guide.store';
 import { useModalStore } from '@/store/modal.store';
 import { useUserStore } from '@/store/user.store';
 
@@ -61,6 +68,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
 
   const { user } = useUserStore();
   const { close } = useModalStore();
+  const { showGuide } = useGuideStore();
 
   const [inputQuery, setInputQuery] = useState('');
   const [query, setQuery] = useState('');
@@ -74,9 +82,13 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
       participants: [user!.id],
       space,
       date: format(new Date(), 'yyyy-MM-dd'),
-      startTime: format(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 'HH:mm'),
-      endTime: format(addHours(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 1), 'HH:mm'),
-      reason: '',
+      startTime: showGuide
+        ? '09:00'
+        : format(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 'HH:mm'),
+      endTime: showGuide
+        ? '10:30'
+        : format(addHours(roundToNearestMinutes(new Date(), { nearestTo: 10 }), 1), 'HH:mm'),
+      reason: showGuide ? 'Tably 예약 가이드입니다. (실제로 예약되지 않습니다.)' : '',
     },
   });
 
@@ -96,17 +108,44 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
     (values: ReservationRequest) => {
       startApi(
         async () => {
-          const { reservation } = await Api.Domain.Reservation.reserve(values);
-          onReserve(reservation);
+          if (showGuide) {
+            await new Promise((res) => setTimeout(res, 500));
+            onReserve({
+              id: 'test-reservation',
+              participants: values.participants.map(
+                (id) =>
+                  ({
+                    id,
+                    club: user!.club,
+                    name: user!.name,
+                  }) as UserDto,
+              ),
+              club: user!.club,
+              space: values.space,
+              date: values.date,
+              startTime: values.startTime + ':00',
+              endTime: values.endTime + ':00',
+              reason: values.reason,
+              status: ReservationStatus.PENDING,
+              returnPicture: null,
+              returnedAt: null,
+            });
+          } else {
+            const { reservation } = await Api.Domain.Reservation.reserve(values);
+            onReserve(reservation);
+          }
         },
         {
           loading: `${spaceName(values.space)}를 예약하고 있습니다.`,
           success: '예약 성공',
-          finally: close,
+          finally: () => {
+            close();
+            redirect('/my-reservations');
+          },
         },
       );
     },
-    [onReserve],
+    [onReserve, showGuide],
   );
 
   const startTime = form.watch('startTime');
@@ -124,6 +163,13 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
     })();
   }, [query, setSearchedUsers]);
 
+  useEffect(() => {
+    if (!showGuide) return;
+
+    driver.setConfig(reserveModalDriver);
+    driver.drive();
+  }, [showGuide]);
+
   return (
     <>
       <DialogHeader>
@@ -140,7 +186,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
             control={form.control}
             name="date"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full" id="reserve-modal-date">
                 <FormLabel>사용 일자</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -185,7 +231,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
               control={form.control}
               name="startTime"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="w-full" id="reserve-modal-start-time">
                   <FormLabel>사용 시작 시간</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-1">
@@ -247,7 +293,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
               control={form.control}
               name="endTime"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="w-full" id="reserve-modal-end-time">
                   <FormLabel>사용 종료 시간</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-1">
@@ -310,7 +356,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
             control={form.control}
             name="participants"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full" id="reserve-modal-people">
                 <FormLabel>사용 인원 ({selectedUsers.length}명)</FormLabel>
                 <Popover modal>
                   <PopoverTrigger asChild>
@@ -398,7 +444,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
             control={form.control}
             name="reason"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full" id="reserve-modal-reason">
                 <FormLabel>사용 목적</FormLabel>
                 <FormControl>
                   <Textarea
@@ -412,7 +458,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
             )}
           />
 
-          <Button className="self-end" disabled={isApiProcessing}>
+          <Button className="self-end" disabled={isApiProcessing} id="reserve-modal-button">
             예약하기
           </Button>
         </form>

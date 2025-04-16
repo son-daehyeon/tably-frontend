@@ -1,3 +1,5 @@
+'use client';
+
 import { Dispatch, SetStateAction } from 'react';
 
 import { Badge } from '@/component/ui/badge';
@@ -9,6 +11,7 @@ import { UploadReturnPictureModalProps } from '@/component/modal/upload-return-p
 
 import { ReservationDto, ReservationStatus } from '@/api/types/reservation';
 
+import { useGuideStore } from '@/store/guide.store';
 import { useModalStore } from '@/store/modal.store';
 
 import { cn, reservationStatusName, spaceName } from '@/lib/utils';
@@ -24,15 +27,18 @@ interface ReservationCardProps {
 
 export default function ReservationCard({ reservation, setReservation }: ReservationCardProps) {
   const { open } = useModalStore();
+  const { showGuide } = useGuideStore();
 
   return (
     <div
+      id={reservation.id}
       className="flex cursor-pointer items-center justify-between rounded-md border p-4 hover:bg-neutral-50"
-      onClick={() =>
+      onClick={() => {
+        if (showGuide) return;
         open<ReservationDetailModalProps>('reservation-detail', {
           reservation,
-        })
-      }
+        });
+      }}
     >
       <div className="flex flex-col gap-2 text-sm sm:text-xs">
         <div className="flex items-center gap-2 text-sm sm:text-xs">
