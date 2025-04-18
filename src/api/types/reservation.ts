@@ -40,7 +40,8 @@ export const ReservationRequestSchema = z
   .object({
     participants: z
       .array(z.string().min(1, '한 글자 이상 입력해주세요.'))
-      .min(1, '한 명 이상 선택해야 합니다.'),
+      .min(3, '3명부터 예약할 수 있습니다')
+      .max(6, '6명까지 예약할 수 있습니다'),
     space: z.nativeEnum(Space, {
       errorMap: () => ({ message: '공간을 선택해주세요.' }),
     }),
