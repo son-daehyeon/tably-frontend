@@ -3,13 +3,13 @@ import { z } from 'zod';
 // ======================================== Enum ========================================
 export enum Club {
   WINK = 'WINK',
+  FOSCAR = 'FOSCAR',
   KOSS = 'KOSS',
-  AIM = 'AIM',
-  KPSC = 'KPSC',
+  DO_UM = 'DO_UM',
   KOBOT = 'KOBOT',
   D_ALPHA = 'D_ALPHA',
-  DO_UM = 'DO_UM',
-  FOSCAR = 'FOSCAR',
+  AIM = 'AIM',
+  KPSC = 'KPSC',
 }
 // ======================================== Enum ========================================
 
