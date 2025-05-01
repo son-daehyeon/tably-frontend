@@ -89,7 +89,7 @@ export default function ReserveModal({ space, onReserve }: ReserveModalProps) {
     resolver: zodResolver(ReservationRequestSchema),
     mode: 'onChange',
     defaultValues: {
-      participants: showGuide ? [user!.id, 'fake1', 'fake2'] : [user!.id],
+      participants: [user!.id],
       space,
       date: format(new Date(), 'yyyy-MM-dd'),
       startTime: showGuide
