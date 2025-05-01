@@ -17,14 +17,18 @@ import { useGuideStore } from '@/store/guide.store';
 
 import { useApi } from '@/hook/use-api';
 
-type TabValue = 'active' | 'previous';
+import { useQueryState } from 'nuqs';
 
 export default function Page() {
   const [isApiProcessing, startApi] = useApi();
 
   const { showGuide } = useGuideStore();
 
-  const [tab, setTab] = useState<TabValue>('active');
+  const [tab, setTab] = useQueryState('tab', {
+    defaultValue: 'active',
+    history: 'push',
+    clearOnDefault: false,
+  });
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
 
   useEffect(() => {
@@ -47,7 +51,7 @@ export default function Page() {
       <Tabs
         value={tab}
         onValueChange={(value) => {
-          setTab(value as TabValue);
+          setTab(value);
 
           if (showGuide && value === 'previous') {
             setTimeout(driver.moveNext, 200);

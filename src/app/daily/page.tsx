@@ -25,9 +25,14 @@ import { useApi } from '@/hook/use-api';
 import { addDays, format, isSameDay, parse, subDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { ArrowLeft, ArrowRight, Plus } from 'lucide-react';
+import { useQueryState } from 'nuqs';
 
 export default function Page() {
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useQueryState('date', {
+    defaultValue: format(new Date(), 'yyyy-MM-dd'),
+    history: 'push',
+    clearOnDefault: false,
+  });
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
 
   const [isApiProcessing, startApi] = useApi();
@@ -56,7 +61,9 @@ export default function Page() {
     if (showGuide) return;
 
     startApi(async () => {
-      const { reservations } = await Api.Domain.Reservation.getDailyReservations(date);
+      const { reservations } = await Api.Domain.Reservation.getDailyReservations(
+        parse(date, 'yyyy-MM-dd', new Date()),
+      );
       setReservations(reservations);
     });
   }, [showGuide, date]);
@@ -72,7 +79,15 @@ export default function Page() {
     <div className="flex flex-col gap-4 sm:gap-8">
       <div className="flex w-full items-center justify-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={() => setDate((prev) => subDays(prev, 1))}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() =>
+              setDate((prev) =>
+                format(subDays(parse(prev, 'yyyy-MM-dd', new Date()), 1), 'yyyy-MM-dd'),
+              )
+            }
+          >
             <ArrowLeft />
           </Button>
           <Popover>
@@ -84,12 +99,20 @@ export default function Page() {
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="single"
-                selected={date}
-                onSelect={(value) => value && setDate(value)}
+                selected={parse(date, 'yyyy-MM-dd', new Date())}
+                onSelect={(value) => value && setDate(format(value, 'yyyy-MM-dd'))}
               />
             </PopoverContent>
           </Popover>
-          <Button variant="outline" size="icon" onClick={() => setDate((prev) => addDays(prev, 1))}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() =>
+              setDate((prev) =>
+                format(addDays(parse(prev, 'yyyy-MM-dd', new Date()), 1), 'yyyy-MM-dd'),
+              )
+            }
+          >
             <ArrowRight />
           </Button>
         </div>
@@ -105,7 +128,11 @@ export default function Page() {
         </Button>
       </div>
 
-      <Timetable date={date} reservations={reservations} loading={isApiProcessing} />
+      <Timetable
+        date={parse(date, 'yyyy-MM-dd', new Date())}
+        reservations={reservations}
+        loading={isApiProcessing}
+      />
     </div>
   );
 }
